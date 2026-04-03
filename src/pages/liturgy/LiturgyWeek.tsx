@@ -21,7 +21,8 @@ export default function LiturgyWeek() {
     async function fetchWeek() {
       try {
         const response = await api.get('/liturgy/week');
-        setDays(response.data.data);
+        const items = response.data.data;
+        setDays(Array.isArray(items) ? items : []);
       } catch {
         setError('Erro ao carregar a liturgia da semana. Tente novamente mais tarde.');
       } finally {

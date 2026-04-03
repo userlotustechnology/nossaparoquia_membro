@@ -63,7 +63,12 @@ export default function Dashboard() {
     const fetchDashboard = async () => {
       try {
         const response = await api.get<{ success: boolean; data: DashboardData }>('/dashboard');
-        setData(response.data.data);
+        const d = response.data.data;
+        setData({
+          ...d,
+          parishes: Array.isArray(d.parishes) ? d.parishes : [],
+          upcoming_events: Array.isArray(d.upcoming_events) ? d.upcoming_events : [],
+        });
       } catch {
         // silently fail
       } finally {

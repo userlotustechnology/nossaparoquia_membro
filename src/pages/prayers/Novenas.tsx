@@ -36,7 +36,7 @@ export default function Novenas() {
       if (query.trim()) params.q = query.trim();
 
       const response = await api.get<{ data: Novena[]; meta: Meta }>('/novenas', { params });
-      const data = response.data.data;
+      const data = Array.isArray(response.data.data) ? response.data.data : [];
       const metaData = response.data.meta;
 
       setNovenas((prev) => (append ? [...prev, ...data] : data));

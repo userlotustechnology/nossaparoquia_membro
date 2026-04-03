@@ -31,7 +31,7 @@ export default function Meditations() {
   async function fetchMeditations(pageNum: number, append = false) {
     try {
       const response = await api.get(`/meditations?per_page=10&page=${pageNum}`);
-      const data = response.data.data;
+      const data = Array.isArray(response.data.data) ? response.data.data : [];
       const responseMeta = response.data.meta;
 
       if (append) {

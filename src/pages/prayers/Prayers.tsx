@@ -89,10 +89,11 @@ export default function Prayers() {
           params,
         });
 
+        const items = Array.isArray(response.data.data) ? response.data.data : [];
         if (append) {
-          setPrayers((prev) => [...prev, ...response.data.data]);
+          setPrayers((prev) => [...prev, ...items]);
         } else {
-          setPrayers(response.data.data);
+          setPrayers(items);
         }
         setMeta(response.data.meta);
       } catch {
@@ -109,7 +110,8 @@ export default function Prayers() {
     const fetchCategories = async () => {
       try {
         const response = await api.get<{ data: Category[] }>('/prayers/categories');
-        setCategories(response.data.data);
+        const cats = response.data.data;
+        setCategories(Array.isArray(cats) ? cats : []);
       } catch {
         // silently fail
       }

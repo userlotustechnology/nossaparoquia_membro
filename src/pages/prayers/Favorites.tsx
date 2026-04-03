@@ -41,10 +41,11 @@ export default function Favorites() {
         { params: { per_page: 20, page } },
       );
 
+      const items = Array.isArray(response.data.data) ? response.data.data : [];
       if (append) {
-        setPrayers((prev) => [...prev, ...response.data.data]);
+        setPrayers((prev) => [...prev, ...items]);
       } else {
-        setPrayers(response.data.data);
+        setPrayers(items);
       }
       setMeta(response.data.meta);
     } catch {
