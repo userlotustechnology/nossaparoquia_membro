@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '@/hooks/useAuth';
-import { Eye, EyeOff, Church } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -67,11 +67,13 @@ export default function Login() {
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="mx-auto w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center mb-4">
-              <Church className="h-10 w-10 text-primary-600" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Nossa Paróquia Online"
+              className="mx-auto w-20 h-20 rounded-full mb-4"
+            />
             <h1 className="text-2xl font-bold text-gray-900">
-              Nossa Paroquia
+              Nossa Paróquia Online
             </h1>
             <p className="text-sm text-gray-500 mt-1">
               Entre para acessar sua conta
