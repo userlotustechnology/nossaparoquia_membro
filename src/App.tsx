@@ -10,6 +10,7 @@ import Layout from '@/components/Layout';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 import ForgotPassword from '@/pages/auth/ForgotPassword';
+import ResetPassword from '@/pages/auth/ResetPassword';
 
 // Dashboard
 import Dashboard from '@/pages/dashboard/Dashboard';
@@ -114,6 +115,7 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Register />} />
               <Route path="/esqueci-senha" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
             </Route>
 
             {/* Protected routes */}

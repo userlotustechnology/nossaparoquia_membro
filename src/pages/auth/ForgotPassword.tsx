@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Church, ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
 import api from '@/lib/api';
 
 export default function ForgotPassword() {
@@ -16,7 +16,7 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      await api.post('/auth/forgot-password', { email });
+      await api.post('/auth/forgot-password', { email, origin: window.location.origin });
       setSuccess(true);
     } catch (err: unknown) {
       if (typeof err === 'object' && err !== null && 'response' in err) {
@@ -41,11 +41,13 @@ export default function ForgotPassword() {
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="mx-auto w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center mb-4">
-              <Church className="h-10 w-10 text-primary-600" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Nossa Paróquia Online"
+              className="mx-auto w-24 h-24 rounded-full object-cover mb-4"
+            />
             <h1 className="text-2xl font-bold text-gray-900">
-              Recuperar Senha
+              Recuperar senha
             </h1>
             <p className="text-sm text-gray-500 mt-1">
               Informe seu e-mail para receber um link de recuperacao
