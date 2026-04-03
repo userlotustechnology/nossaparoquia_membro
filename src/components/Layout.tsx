@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import clsx from 'clsx';
-import { Church, LogOut, Menu, X, ChevronDown, Bell, User } from 'lucide-react';
+import { LogOut, Menu, X, ChevronDown, Bell, User } from 'lucide-react';
 import BottomNav from './BottomNav';
 import { navigation, sectionLabels } from '@/lib/navigation';
 
@@ -63,10 +63,11 @@ export default function Layout() {
               <Menu className="h-6 w-6" />
             </button>
 
-            {/* Center: parish name (mobile) / spacer (desktop) */}
-            <h1 className="lg:hidden text-sm font-semibold text-gray-900 truncate mx-2">
-              Nossa Paroquia
-            </h1>
+            {/* Center: logo + name (mobile) / spacer (desktop) */}
+            <div className="lg:hidden flex items-center gap-2 mx-2">
+              <img src="/logo.png" alt="Logo" className="h-7 w-7 object-contain" />
+              <span className="text-sm font-semibold text-gray-900 truncate">Nossa Paróquia</span>
+            </div>
             <div className="hidden lg:block flex-1" />
 
             {/* Right: notification + avatar */}
@@ -171,15 +172,13 @@ function SidebarContent({ currentPath, onClose, onLogout, user }: SidebarContent
       {/* Header */}
       <div className="flex items-center justify-between shrink-0 h-16 px-4 border-b border-gray-200">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="h-9 w-9 rounded-full bg-primary-500 flex items-center justify-center shrink-0">
-            <Church className="h-5 w-5 text-white" />
-          </div>
+          <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain shrink-0" />
           <div className="min-w-0">
             <p className="text-sm font-semibold text-gray-900 truncate leading-tight">
-              Nossa Paroquia
+              Nossa Paróquia
             </p>
             <p className="text-xs text-gray-500 leading-tight">
-              Membro
+              Área do Membro
             </p>
           </div>
         </div>
