@@ -172,7 +172,7 @@ function SidebarContent({ currentPath, onClose, onLogout, user }: SidebarContent
       {/* Header */}
       <div className="flex items-center justify-between shrink-0 h-16 px-4 border-b border-gray-200">
         <div className="flex items-center gap-2.5 min-w-0">
-          <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain shrink-0" />
+          <img src="/logo.png" alt="Logo" className="h-9 w-9 rounded-full object-cover shrink-0" />
           <div className="min-w-0">
             <p className="text-sm font-semibold text-gray-900 truncate leading-tight">
               Nossa Paróquia

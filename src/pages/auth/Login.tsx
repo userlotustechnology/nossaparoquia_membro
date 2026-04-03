@@ -70,7 +70,7 @@ export default function Login() {
             <img
               src="/logo.png"
               alt="Nossa Paróquia Online"
-              className="mx-auto w-24 h-24 object-contain mb-4"
+              className="mx-auto w-24 h-24 rounded-full object-cover mb-4"
             />
             <h1 className="text-2xl font-bold text-gray-900">
               Nossa Paróquia Online
