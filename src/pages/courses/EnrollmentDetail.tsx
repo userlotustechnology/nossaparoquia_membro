@@ -4,7 +4,7 @@ import api from '@/lib/api';
 import { BookCheck, ArrowLeft, ChevronDown, ChevronUp, CheckCircle, Circle, Loader2 } from 'lucide-react';
 
 export default function EnrollmentDetail() {
-  const { id } = useParams();
+  const { enrollmentUuid } = useParams<{ enrollmentUuid: string }>();
   const [enrollment, setEnrollment] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [completingLesson, setCompletingLesson] = useState<number | null>(null);
@@ -12,7 +12,7 @@ export default function EnrollmentDetail() {
   const [openModules, setOpenModules] = useState<Record<number, boolean>>({});
 
   const fetchEnrollment = () => {
-    return api.get(`/courses/my/${id}`)
+    return api.get(`/courses/my/${enrollmentUuid}`)
       .then((response) => {
         setEnrollment(response.data.data ?? response.data);
       })
@@ -23,7 +23,7 @@ export default function EnrollmentDetail() {
 
   useEffect(() => {
     let cancelled = false;
-    api.get(`/courses/my/${id}`)
+    api.get(`/courses/my/${enrollmentUuid}`)
       .then((response) => {
         if (cancelled) return;
         setEnrollment(response.data.data ?? response.data);
@@ -31,7 +31,7 @@ export default function EnrollmentDetail() {
       .catch(() => { if (!cancelled) setEnrollment(null); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [id]);
+  }, [enrollmentUuid]);
 
   const handleCompleteLesson = async (lessonId: number) => {
     setCompletingLesson(lessonId);

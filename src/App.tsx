@@ -180,7 +180,7 @@ export default function App() {
                 <Route path="/cursos" element={<Courses />} />
                 <Route path="/cursos/:slug" element={<CourseDetail />} />
                 <Route path="/meus-cursos" element={<MyEnrollments />} />
-                <Route path="/meus-cursos/:id" element={<EnrollmentDetail />} />
+                <Route path="/meus-cursos/:enrollmentUuid" element={<EnrollmentDetail />} />
                 <Route path="/certificados" element={<Certificates />} />
 
                 {/* Tithes */}

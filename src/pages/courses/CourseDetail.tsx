@@ -25,10 +25,14 @@ export default function CourseDetail() {
 
   const handleEnroll = async () => {
     if (!course) return;
+    if (!course.uuid) {
+      setMessage('Não foi possível identificar o curso. Atualize a página.');
+      return;
+    }
     setEnrolling(true);
     setMessage('');
     try {
-      await api.post(`/courses/${course.id}/enroll`);
+      await api.post(`/courses/${course.uuid}/enroll`);
       setMessage('Inscrição realizada com sucesso!');
     } catch {
       setMessage('Erro ao realizar inscrição.');

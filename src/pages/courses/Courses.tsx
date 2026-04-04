@@ -93,7 +93,7 @@ export default function Courses() {
           ) : (
             <div className="space-y-4">
               {courses.map((course: any) => (
-                <Link key={course.id} to={`/cursos/${course.slug}`}>
+                <Link key={course.uuid ?? course.id} to={`/cursos/${course.slug}`}>
                   <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
                     <div className="flex gap-4">
                       <div className="h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-gray-100">
