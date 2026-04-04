@@ -94,41 +94,58 @@ export default function Courses() {
             <div className="space-y-4">
               {courses.map((course: any) => (
                 <Link key={course.id} to={`/cursos/${course.slug}`}>
-                  <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between">
-                      <h2 className="text-lg font-semibold text-gray-900">{course.title}</h2>
-                      {course.is_free ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                          Gratuito
-                        </span>
-                      ) : (
-                        <span className="text-sm font-semibold text-gray-900">
-                          {formatPrice(course.price ?? 0)}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-3 space-y-2 text-sm text-gray-600">
-                      {course.category && (
-                        <div className="flex items-center gap-2">
-                          <Tag className="h-4 w-4 text-gray-400" />
-                          <span>{course.category}</span>
+                  <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+                    <div className="flex gap-4">
+                      <div className="h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                        {course.thumbnail_url ? (
+                          <img
+                            src={course.thumbnail_url}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center">
+                            <GraduationCap className="h-10 w-10 text-gray-300" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <h2 className="text-lg font-semibold text-gray-900">{course.title}</h2>
+                          {course.is_free ? (
+                            <span className="inline-flex shrink-0 items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                              Gratuito
+                            </span>
+                          ) : (
+                            <span className="shrink-0 text-sm font-semibold text-gray-900">
+                              {formatPrice(course.price ?? 0)}
+                            </span>
+                          )}
                         </div>
-                      )}
-                      {course.level && (
-                        <div className="flex items-center gap-2">
-                          <BarChart3 className="h-4 w-4 text-gray-400" />
-                          <span>{course.level}</span>
+                        <div className="mt-3 space-y-2 text-sm text-gray-600">
+                          {(course.category_label || course.category) && (
+                            <div className="flex items-center gap-2">
+                              <Tag className="h-4 w-4 text-gray-400" />
+                              <span>{course.category_label ?? course.category}</span>
+                            </div>
+                          )}
+                          {(course.level_label || course.level) && (
+                            <div className="flex items-center gap-2">
+                              <BarChart3 className="h-4 w-4 text-gray-400" />
+                              <span>{course.level_label ?? course.level}</span>
+                            </div>
+                          )}
+                          {course.instructor_name && (
+                            <div className="flex items-center gap-2">
+                              <User className="h-4 w-4 text-gray-400" />
+                              <span>{course.instructor_name}</span>
+                            </div>
+                          )}
+                          <div className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-gray-400" />
+                            <span>{course.enrolled_count ?? course.enrollments_count ?? 0} inscritos</span>
+                          </div>
                         </div>
-                      )}
-                      {course.instructor && (
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-gray-400" />
-                          <span>{course.instructor}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-gray-400" />
-                        <span>{course.enrollments_count ?? 0} inscritos</span>
                       </div>
                     </div>
                   </div>
@@ -153,26 +170,43 @@ export default function Courses() {
             <div className="space-y-4">
               {myCourses.map((enrollment: any) => (
                 <Link key={enrollment.id} to={`/meus-cursos/${enrollment.id}`}>
-                  <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between">
-                      <h2 className="text-lg font-semibold text-gray-900">
-                        {enrollment.course?.title ?? enrollment.title}
-                      </h2>
-                      {enrollment.payment_status && (
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${paymentStatusLabel(enrollment.payment_status).cls}`}>
-                          {paymentStatusLabel(enrollment.payment_status).label}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-3 space-y-2 text-sm text-gray-600">
-                      {enrollment.enrolled_at && (
-                        <p>Inscrito em: {formatDate(enrollment.enrolled_at)}</p>
-                      )}
-                      {enrollment.completed_at && (
-                        <p className="text-green-600 font-medium">
-                          Concluído em: {formatDate(enrollment.completed_at)}
-                        </p>
-                      )}
+                  <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+                    <div className="flex gap-4">
+                      <div className="h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                        {enrollment.course?.thumbnail_url ? (
+                          <img
+                            src={enrollment.course.thumbnail_url}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center">
+                            <GraduationCap className="h-10 w-10 text-gray-300" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <h2 className="text-lg font-semibold text-gray-900">
+                            {enrollment.course?.title ?? enrollment.title}
+                          </h2>
+                          {enrollment.payment_status && (
+                            <span className={`inline-flex shrink-0 items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${paymentStatusLabel(enrollment.payment_status).cls}`}>
+                              {paymentStatusLabel(enrollment.payment_status).label}
+                            </span>
+                          )}
+                        </div>
+                        <div className="mt-3 space-y-2 text-sm text-gray-600">
+                          {enrollment.enrolled_at && (
+                            <p>Inscrito em: {formatDate(enrollment.enrolled_at)}</p>
+                          )}
+                          {enrollment.completed_at && (
+                            <p className="text-green-600 font-medium">
+                              Concluído em: {formatDate(enrollment.completed_at)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Link>

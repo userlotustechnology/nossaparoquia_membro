@@ -76,22 +76,32 @@ export default function CourseDetail() {
         Voltar
       </Link>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <GraduationCap className="h-6 w-6 text-primary-500" />
-            <h1 className="text-2xl font-bold text-gray-900">{course.title}</h1>
+      <div className="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
+        {course.thumbnail_url ? (
+          <div className="aspect-[21/9] max-h-56 w-full bg-gray-100">
+            <img
+              src={course.thumbnail_url}
+              alt=""
+              className="h-full w-full object-cover"
+            />
           </div>
-          {course.is_free ? (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-              Gratuito
-            </span>
-          ) : (
-            <span className="text-lg font-semibold text-gray-900">
-              {formatPrice(course.price ?? 0)}
-            </span>
-          )}
-        </div>
+        ) : null}
+        <div className="p-6">
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <GraduationCap className="h-6 w-6 shrink-0 text-primary-500" />
+              <h1 className="text-2xl font-bold text-gray-900">{course.title}</h1>
+            </div>
+            {course.is_free ? (
+              <span className="inline-flex shrink-0 items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                Gratuito
+              </span>
+            ) : (
+              <span className="shrink-0 text-lg font-semibold text-gray-900">
+                {formatPrice(course.price ?? 0)}
+              </span>
+            )}
+          </div>
 
         {course.description && (
           <div
@@ -100,10 +110,10 @@ export default function CourseDetail() {
           />
         )}
 
-        {course.instructor && (
+        {course.instructor_name && (
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
             <User className="h-4 w-4 text-gray-400" />
-            <span>Instrutor: {course.instructor}</span>
+            <span>Instrutor: {course.instructor_name}</span>
           </div>
         )}
 
@@ -122,6 +132,7 @@ export default function CourseDetail() {
           {enrolling && <Loader2 className="h-4 w-4 animate-spin" />}
           Inscrever-se
         </button>
+        </div>
       </div>
 
       {modules.length > 0 && (
