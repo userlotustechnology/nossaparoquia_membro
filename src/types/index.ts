@@ -16,6 +16,8 @@ export interface User {
   updated_at: string;
   is_active: boolean;
   email_verified_at: string | null;
+  /** Autenticação em dois passos (Google Authenticator) ativa */
+  two_factor_enabled?: boolean;
 }
 
 export interface AuthState {

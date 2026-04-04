@@ -59,10 +59,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     async (email: string, password: string) => {
       const response = await api.post<{
         success: boolean;
-        data: { user: User; token: string; token_type: string };
+        data: Record<string, unknown>;
       }>('/auth/login', { email, password, device_name: 'membro-web' });
-      const { user: userData, token: tokenValue } = response.data.data;
-      persist(userData, tokenValue);
+      const data = response.data.data as {
+        requires_2fa?: boolean;
+        two_factor_token?: string;
+        user?: User;
+        token?: string;
+      };
+      if (data.requires_2fa && data.two_factor_token) {
+        return { status: 'needs_2fa' as const, twoFactorToken: data.two_factor_token };
+      }
+      if (data.user && data.token) {
+        persist(data.user, data.token);
+        return { status: 'success' as const };
+      }
+      throw new Error('Resposta de login inválida.');
     },
     [persist],
   );
@@ -71,8 +83,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
     async (credential: string) => {
       const response = await api.post<{
         success: boolean;
-        data: { user: User; token: string; token_type: string };
+        data: Record<string, unknown>;
       }>('/auth/google', { credential, device_name: 'membro-web' });
+      const data = response.data.data as {
+        requires_2fa?: boolean;
+        two_factor_token?: string;
+        user?: User;
+        token?: string;
+      };
+      if (data.requires_2fa && data.two_factor_token) {
+        return { status: 'needs_2fa' as const, twoFactorToken: data.two_factor_token };
+      }
+      if (data.user && data.token) {
+        persist(data.user, data.token);
+        return { status: 'success' as const };
+      }
+      throw new Error('Resposta de login inválida.');
+    },
+    [persist],
+  );
+
+  const completeTwoFactorLogin = useCallback(
+    async (params: { twoFactorToken: string; code?: string; backupCode?: string }) => {
+      const response = await api.post<{
+        success: boolean;
+        data: { user: User; token: string; token_type: string };
+      }>('/auth/verify-2fa', {
+        two_factor_token: params.twoFactorToken,
+        code: params.code,
+        backup_code: params.backupCode,
+        device_name: 'membro-web',
+      });
       const { user: userData, token: tokenValue } = response.data.data;
       persist(userData, tokenValue);
     },
@@ -127,6 +168,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         register,
         logout,
         refreshUser,
+        completeTwoFactorLogin,
       }}
     >
       {children}
