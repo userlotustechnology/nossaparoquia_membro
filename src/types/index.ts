@@ -6,9 +6,12 @@ export interface User {
   email: string;
   phone: string | null;
   document: string | null;
-  birth: string | null;
+  /** Data de nascimento (YYYY-MM-DD), conforme API `/auth/me` */
+  birth_date?: string | null;
+  birth?: string | null;
   gender: 'M' | 'F' | 'O' | null;
   avatar_url: string | null;
+  photo_url?: string | null;
   created_at: string;
   updated_at: string;
   is_active: boolean;

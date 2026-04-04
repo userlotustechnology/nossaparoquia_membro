@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import api from '../lib/api';
-import type { User } from '../types';
+import type { User } from '@/types';
 import { AuthContext } from './auth-context';
 
 interface AuthProviderProps {
@@ -107,6 +107,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [clear]);
 
+  const refreshUser = useCallback(async () => {
+    const storedToken = localStorage.getItem('auth_token');
+    if (!storedToken) return;
+    const response = await api.get<{ success: boolean; data: User }>('/auth/me');
+    setUser(response.data.data);
+    localStorage.setItem('auth_user', JSON.stringify(response.data.data));
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -118,6 +126,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         loginWithGoogle,
         register,
         logout,
+        refreshUser,
       }}
     >
       {children}

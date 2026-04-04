@@ -12,6 +12,8 @@ export interface AuthContextData extends AuthState {
     device_name?: string,
   ) => Promise<void>;
   logout: () => Promise<void>;
+  /** Recarrega o utilizador a partir de `GET /auth/me` (ex.: após atualizar perfil). */
+  refreshUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextData | undefined>(undefined);

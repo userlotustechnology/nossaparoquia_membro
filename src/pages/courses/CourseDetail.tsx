@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '@/lib/api';
-import { GraduationCap, ArrowLeft, User, ChevronDown, ChevronUp, BookOpen, Loader2, CheckCircle } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { completedYearsSinceBirth } from '@/lib/age';
+import { GraduationCap, ArrowLeft, User, ChevronDown, ChevronUp, BookOpen, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function CourseDetail() {
   const { slug } = useParams();
+  const { user, isAuthenticated } = useAuth();
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
-  const [message, setMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [openModules, setOpenModules] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
@@ -23,19 +27,58 @@ export default function CourseDetail() {
     return () => { cancelled = true; };
   }, [slug]);
 
+  const minAge = course?.min_age != null && Number(course.min_age) > 0 ? Number(course.min_age) : null;
+  const birthRaw = user?.birth_date ?? user?.birth ?? null;
+  const userAge = useMemo(() => completedYearsSinceBirth(birthRaw), [birthRaw]);
+
+  const ageEligible = useMemo(() => {
+    if (!minAge) return true;
+    if (!isAuthenticated || !user) return false;
+    if (!birthRaw || userAge === null) return false;
+    return userAge >= minAge;
+  }, [minAge, isAuthenticated, user, birthRaw, userAge]);
+
+  const canClickEnroll = isAuthenticated && ageEligible && !!course?.uuid;
+
+  const enrollBlockReason = useMemo(() => {
+    if (!minAge) return null;
+    if (!isAuthenticated) {
+      return { text: 'Entre na sua conta para se inscrever.', link: '/login', linkLabel: 'Entrar' };
+    }
+    if (!birthRaw || userAge === null) {
+      return {
+        text: `Este curso exige no mínimo ${minAge} anos. Cadastre sua data de nascimento no perfil.`,
+        link: '/perfil',
+        linkLabel: 'Abrir perfil',
+      };
+    }
+    if (userAge < minAge) {
+      return {
+        text: `Este curso é destinado a participantes com no mínimo ${minAge} anos de idade.`,
+        link: null,
+        linkLabel: null,
+      };
+    }
+    return null;
+  }, [minAge, isAuthenticated, birthRaw, userAge]);
+
   const handleEnroll = async () => {
     if (!course) return;
     if (!course.uuid) {
-      setMessage('Não foi possível identificar o curso. Atualize a página.');
+      setErrorMessage('Não foi possível identificar o curso. Atualize a página.');
+      setSuccessMessage('');
       return;
     }
+    if (!canClickEnroll) return;
     setEnrolling(true);
-    setMessage('');
+    setSuccessMessage('');
+    setErrorMessage('');
     try {
       await api.post(`/courses/${course.uuid}/enroll`);
-      setMessage('Inscrição realizada com sucesso!');
-    } catch {
-      setMessage('Erro ao realizar inscrição.');
+      setSuccessMessage('Inscrição realizada com sucesso!');
+    } catch (err: unknown) {
+      const ax = err as { response?: { data?: { message?: string } } };
+      setErrorMessage(ax.response?.data?.message || 'Erro ao realizar inscrição.');
     } finally {
       setEnrolling(false);
     }
@@ -121,17 +164,46 @@ export default function CourseDetail() {
           </div>
         )}
 
-        {message && (
+        {minAge ? (
+          <p className="text-sm text-gray-600 mb-4">
+            Idade mínima para matrícula: <span className="font-medium text-gray-900">{minAge} anos</span>
+          </p>
+        ) : null}
+
+        {enrollBlockReason && (
+          <div className="flex flex-wrap items-center gap-2 mb-4 p-3 rounded-lg bg-amber-50 text-amber-900 text-sm">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span>{enrollBlockReason.text}</span>
+            {enrollBlockReason.link && enrollBlockReason.linkLabel ? (
+              <Link
+                to={enrollBlockReason.link}
+                className="font-medium text-primary-600 hover:text-primary-700 underline"
+              >
+                {enrollBlockReason.linkLabel}
+              </Link>
+            ) : null}
+          </div>
+        )}
+
+        {successMessage && (
           <div className="flex items-center gap-2 mb-4 p-3 rounded-lg bg-green-50 text-green-700 text-sm">
-            <CheckCircle className="h-4 w-4" />
-            {message}
+            <CheckCircle className="h-4 w-4 shrink-0" />
+            {successMessage}
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="flex items-center gap-2 mb-4 p-3 rounded-lg bg-red-50 text-red-700 text-sm">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {errorMessage}
           </div>
         )}
 
         <button
+          type="button"
           onClick={handleEnroll}
-          disabled={enrolling}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 disabled:opacity-50"
+          disabled={enrolling || !canClickEnroll}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {enrolling && <Loader2 className="h-4 w-4 animate-spin" />}
           Inscrever-se
