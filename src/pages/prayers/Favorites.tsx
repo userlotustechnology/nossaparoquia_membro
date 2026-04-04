@@ -24,6 +24,15 @@ interface PrayersMeta {
   last_page: number;
 }
 
+function extractPrayerList(payload: unknown): Prayer[] {
+  if (Array.isArray(payload)) return payload as Prayer[];
+  if (payload && typeof payload === 'object' && 'data' in payload) {
+    const inner = (payload as { data: unknown }).data;
+    if (Array.isArray(inner)) return inner as Prayer[];
+  }
+  return [];
+}
+
 export default function Favorites() {
   const [prayers, setPrayers] = useState<Prayer[]>([]);
   const [meta, setMeta] = useState<PrayersMeta | null>(null);
@@ -41,7 +50,7 @@ export default function Favorites() {
         { params: { per_page: 20, page } },
       );
 
-      const items = Array.isArray(response.data.data) ? response.data.data : [];
+      const items = extractPrayerList(response.data.data ?? response.data);
       if (append) {
         setPrayers((prev) => [...prev, ...items]);
       } else {
